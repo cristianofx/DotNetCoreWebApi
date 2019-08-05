@@ -13,7 +13,7 @@ namespace DotNetCoreWebApi.Controllers
         {
             var response = new RootResponse
             {
-                Href = null,
+                Self = Link.To(nameof(GetRoot)),
                 Rooms = Link.To(nameof(RoomsController.GetRooms)), //= Url.Link(nameof(RoomsController.GetRooms), null),
                 Info = Link.To(nameof(InfoController.GetInfo))
             };
