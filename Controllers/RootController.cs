@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DotNetCoreWebApi.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DotNetCoreWebApi.Controllers
 {
@@ -14,14 +11,25 @@ namespace DotNetCoreWebApi.Controllers
         [HttpGet(Name = nameof(GetRoot))]
         public IActionResult GetRoot()
         {
-            var response = new
+            var response = new RootResponse
             {
-                href = Url.Link(nameof(GetRoot), null),
-                rooms = new
-                {
-                    href = Url.Link(nameof(RoomsController.GetRooms), null)
-                }
+                Href = null,
+                Rooms = Link.To(nameof(RoomsController.GetRooms)), //= Url.Link(nameof(RoomsController.GetRooms), null),
+                Info = Link.To(nameof(InfoController.GetInfo))
             };
+
+            //var response = new
+            //{
+            //    href = Url.Link(nameof(GetRoot), null),
+            //    rooms = new
+            //    {
+            //        href = Url.Link(nameof(RoomsController.GetRooms), null)
+            //    },
+            //    info = new
+            //    {
+            //        href = Url.Link(nameof(InfoController.GetInfo), null)
+            //    }
+            //};
 
             return Ok(response);
         }
