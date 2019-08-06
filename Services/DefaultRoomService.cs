@@ -34,9 +34,10 @@ namespace DotNetCoreWebApi.Services
             return mapper.Map<Room>(entity);
         }
 
-        public async Task<PagedResults<Room>> GetRoomsAsync(PagingOptions pagingOptions, SortOptions<Room, RoomEntity> sortOptions)
+        public async Task<PagedResults<Room>> GetRoomsAsync(PagingOptions pagingOptions, SortOptions<Room, RoomEntity> sortOptions, SearchOptions<Room, RoomEntity> searchOptions)
         {
             IQueryable<RoomEntity> query = _context.Rooms;
+            query = searchOptions.Apply(query);
             query = sortOptions.Apply(query);
 
             var size = await query.CountAsync();

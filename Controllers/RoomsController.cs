@@ -30,12 +30,13 @@ namespace DotNetCoreWebApi.Controllers
         [ProducesResponseType(200)]
         public async Task<ActionResult<Collection<Room>>> GetAllRooms(
             [FromQuery] PagingOptions pagingOptions,
-            [FromQuery] SortOptions<Room, RoomEntity> sortOptions)
+            [FromQuery] SortOptions<Room, RoomEntity> sortOptions,
+            [FromQuery] SearchOptions<Room, RoomEntity> searchOptions)
         {
             pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
             pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
-            var rooms = await _roomService.GetRoomsAsync(pagingOptions, sortOptions);
+            var rooms = await _roomService.GetRoomsAsync(pagingOptions, sortOptions, searchOptions);
 
             var collection = PagedCollection<Room>.Create<RoomsResponse>(
                 Link.ToCollection(nameof(GetAllRooms)),
