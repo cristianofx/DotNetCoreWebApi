@@ -8,6 +8,7 @@ namespace DotNetCoreWebApi.ServiceInterfaces
 {
     public interface IRoomService
     {
+        Task<IEnumerable<Room>> GetRoomsAsync();
         Task<Room> GetRoomAsync(Guid id);
     }
 }

@@ -14,22 +14,9 @@ namespace DotNetCoreWebApi.Controllers
             var response = new RootResponse
             {
                 Self = Link.To(nameof(GetRoot)),
-                Rooms = Link.To(nameof(RoomsController.GetRooms)), //= Url.Link(nameof(RoomsController.GetRooms), null),
+                Rooms = Link.ToCollection(nameof(RoomsController.GetAllRooms)), //= Url.Link(nameof(RoomsController.GetRooms), null),
                 Info = Link.To(nameof(InfoController.GetInfo))
             };
-
-            //var response = new
-            //{
-            //    href = Url.Link(nameof(GetRoot), null),
-            //    rooms = new
-            //    {
-            //        href = Url.Link(nameof(RoomsController.GetRooms), null)
-            //    },
-            //    info = new
-            //    {
-            //        href = Url.Link(nameof(InfoController.GetInfo), null)
-            //    }
-            //};
 
             return Ok(response);
         }

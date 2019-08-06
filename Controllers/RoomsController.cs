@@ -1,8 +1,7 @@
 ﻿using DotNetCoreWebApi.Data;
-using DotNetCoreWebApi.Data;
+using DotNetCoreWebApi.Models;
 using DotNetCoreWebApi.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,16 +13,27 @@ namespace DotNetCoreWebApi.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly IRoomService _roomService;
+        private readonly IOpeningService _openingService;
 
-        public RoomsController(IRoomService roomService)
+        public RoomsController(IRoomService roomService, IOpeningService openingService)
         {
             _roomService = roomService;
+            _openingService = openingService;
         }
         
-        [HttpGet(Name = nameof(GetRooms))]
-        public IActionResult GetRooms()
+        [HttpGet(Name = nameof(GetAllRooms))]
+        [ProducesResponseType(200)]
+        public async Task<ActionResult<Collection<Room>>> GetAllRooms()
         {
-            throw new NotImplementedException();
+            var rooms = await _roomService.GetRoomsAsync();
+
+            var collection = new Collection<Room>
+            {
+                Self = Link.ToCollection(nameof(GetAllRooms)),
+                Value = rooms.ToArray()
+            };
+
+            return collection;
         }
 
         //GET /rooms/{roomId}
@@ -40,6 +50,22 @@ namespace DotNetCoreWebApi.Controllers
             }
 
             return room;
+        }
+
+        // GET /rooms/openings
+        [HttpGet("openings", Name = nameof(GetAllRoomOpenings))]
+        [ProducesResponseType(200)]
+        public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings()
+        {
+            var openings = await _openingService.GetOpeningsAsync();
+
+            var collection = new Collection<Opening>()
+            {
+                Self = Link.ToCollection(nameof(GetAllRoomOpenings)),
+                Value = openings.ToArray()
+            };
+
+            return collection;
         }
     }
 }

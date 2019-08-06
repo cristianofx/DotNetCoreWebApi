@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DotNetCoreWebApi.Filters;
+﻿using DotNetCoreWebApi.Filters;
 using DotNetCoreWebApi.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
-using DotNetCoreWebApi.Data;
 using DotNetCoreWebApi.ServiceInterfaces;
 using DotNetCoreWebApi.Services;
 using AutoMapper;
-using DotNetCoreWebApi.Profiles;
+using DotNetCoreWebApi.Models;
+using Newtonsoft.Json;
 
 namespace DotNetCoreWebApi
 {
@@ -36,9 +29,13 @@ namespace DotNetCoreWebApi
         {
             //Get properties from appsettings.json
             services.Configure<HotelInfo>(Configuration.GetSection("Info"));
+            services.Configure<HotelOptions>(Configuration);
 
             //Add services for dependency injection
             services.AddScoped<IRoomService, DefaultRoomService>();
+            services.AddScoped<IBookingService, DefaultBookingService>();
+            services.AddScoped<IDateLogicService, DefaultDateLogicService>();
+            services.AddScoped<IOpeningService, DefaultOpeningService>();
 
             //using in-memory database for dev and testing
             //TODO: Swapp to a real database
@@ -53,7 +50,15 @@ namespace DotNetCoreWebApi
                 options.Filters.Add<RequireHttpsOrCloseAttribute>();
                 options.Filters.Add<LinkRewritingFilter>();
             })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(options =>
+                {
+                    // These should be the defaults, but we can be explicit:
+                    options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                    options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+                    options.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
+
+                }); ;
 
             services.AddOpenApiDocument(); // add OpenAPI v3 document
             //services.AddSwaggerDocument(); // add Swagger v2 document

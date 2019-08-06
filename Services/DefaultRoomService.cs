@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DotNetCoreWebApi.Data;
+using AutoMapper.QueryableExtensions;
 using DotNetCoreWebApi.Data;
 using DotNetCoreWebApi.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +13,12 @@ namespace DotNetCoreWebApi.Services
     public class DefaultRoomService : IRoomService
     {
         private readonly ApiDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly IConfigurationProvider _mappingConfiguration;
 
-        public DefaultRoomService(ApiDbContext context, IMapper mapper)
+        public DefaultRoomService(ApiDbContext context, IConfigurationProvider mappingConfiguration)
         {
             _context = context;
-            _mapper = mapper;
+            _mappingConfiguration = mappingConfiguration;
         }
 
         public async Task<Room> GetRoomAsync(Guid id)
@@ -29,8 +29,15 @@ namespace DotNetCoreWebApi.Services
             {
                 return null;
             }
+            var mapper = _mappingConfiguration.CreateMapper();
+            return mapper.Map<Room>(entity);
+        }
 
-            return _mapper.Map<Room>(entity);
+        public async Task<IEnumerable<Room>> GetRoomsAsync()
+        {
+            var query = _context.Rooms.ProjectTo<Room>(_mappingConfiguration);
+
+            return await query.ToArrayAsync();
         }
 
         private Room NotFound()
