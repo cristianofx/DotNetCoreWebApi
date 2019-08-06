@@ -1,4 +1,4 @@
-﻿namespace DotNetCoreWebApi.Data
+﻿namespace DotNetCoreWebApi.Infrastructure.JSONResponse
 {
     public class ApiError
     {

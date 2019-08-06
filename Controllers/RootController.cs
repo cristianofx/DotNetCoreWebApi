@@ -1,4 +1,4 @@
-﻿using DotNetCoreWebApi.Models;
+﻿using DotNetCoreWebApi.Infrastructure.JSONResponse;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNetCoreWebApi.Controllers

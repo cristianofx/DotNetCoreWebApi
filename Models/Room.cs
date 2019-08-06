@@ -1,4 +1,6 @@
-﻿namespace DotNetCoreWebApi.Data
+﻿using DotNetCoreWebApi.Infrastructure.JSONResponse;
+
+namespace DotNetCoreWebApi.Data
 {
     public class Room : Resource
     {
