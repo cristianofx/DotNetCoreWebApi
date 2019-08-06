@@ -1,4 +1,5 @@
 ﻿using DotNetCoreWebApi.Data;
+using DotNetCoreWebApi.Infrastructure.JSONResponse;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace DotNetCoreWebApi.ServiceInterfaces
 {
     public interface IOpeningService
     {
-        Task<IEnumerable<Opening>> GetOpeningsAsync();
+        Task<PagedResults<Opening>> GetOpeningsAsync(PagingOptions pagingOptions);
 
         Task<IEnumerable<BookingRange>> GetConflictingSlots(
             Guid roomId,

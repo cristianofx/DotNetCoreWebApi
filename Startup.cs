@@ -12,6 +12,7 @@ using DotNetCoreWebApi.Services;
 using AutoMapper;
 using DotNetCoreWebApi.Models;
 using Newtonsoft.Json;
+using DotNetCoreWebApi.Infrastructure.JSONResponse;
 
 namespace DotNetCoreWebApi
 {
@@ -30,6 +31,7 @@ namespace DotNetCoreWebApi
             //Get properties from appsettings.json
             services.Configure<HotelInfo>(Configuration.GetSection("Info"));
             services.Configure<HotelOptions>(Configuration);
+            services.Configure<PagingOptions>(Configuration.GetSection("DefaultPagingOptions"));
 
             //Add services for dependency injection
             services.AddScoped<IRoomService, DefaultRoomService>();
@@ -77,17 +79,13 @@ namespace DotNetCoreWebApi
 
             services.AddAutoMapper(typeof(Startup));
 
-            //// Auto Mapper Configurations
-            //var mappingConfig = new MapperConfiguration(mc =>
-            //{
-            //    mc.AddProfile(new MappingProfile());
-            //});
-
-            //IMapper mapper = mappingConfig.CreateMapper();
-            //services.AddSingleton(mapper);
-
-            //services.AddAutoMapper(
-            //    options => options.AddProfile<MappingProfile>());
+            services.Configure<ApiBehaviorOptions>(options => {
+                                                        options.InvalidModelStateResponseFactory = context =>
+                                                        {
+                                                            var errorResponse = new ApiError(context.ModelState);
+                                                            return new BadRequestObjectResult(errorResponse);
+                                                        };
+                                                    });
 
             // If CORS is needed, use options bellow
             //services.AddCors(options =>
@@ -106,6 +104,7 @@ namespace DotNetCoreWebApi
 
                 app.UseOpenApi();
                 app.UseSwaggerUi3();
+                //app.UseSwaggerUi();
                 app.UseReDoc();
             }
             else
