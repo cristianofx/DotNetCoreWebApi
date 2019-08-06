@@ -2,12 +2,18 @@
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 
-namespace DotNetCoreWebApi.Infrastructure.JSONResponse
+namespace DotNetCoreWebApi.Infrastructure.Response
 {
     public class PagedCollection<T> : Collection<T>
     {
         public static PagedCollection<T> Create(
-            Link self, T[] items, int size, PagingOptions pagingOptions) => new PagedCollection<T>
+            Link self, T[] items, int size, PagingOptions pagingOptions)
+            => Create<PagedCollection<T>>(self, items, size, pagingOptions);
+
+        public static TResponse Create<TResponse>(
+            Link self, T[] items, int size, PagingOptions pagingOptions)
+            where TResponse : PagedCollection<T>, new()
+            => new TResponse
             {
                 Self = self,
                 Value = items,
@@ -17,7 +23,7 @@ namespace DotNetCoreWebApi.Infrastructure.JSONResponse
                 First = self,
                 Next = GetNextLink(self, size, pagingOptions),
                 Previous = GetPreviousLink(self, size, pagingOptions),
-                Last = GetLastLink(self, size, pagingOptions),
+                Last = GetLastLink(self, size, pagingOptions)
             };
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]

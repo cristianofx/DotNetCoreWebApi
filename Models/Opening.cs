@@ -1,4 +1,4 @@
-﻿using DotNetCoreWebApi.Infrastructure.JSONResponse;
+﻿using DotNetCoreWebApi.Infrastructure.Response;
 using System;
 
 namespace DotNetCoreWebApi.Data

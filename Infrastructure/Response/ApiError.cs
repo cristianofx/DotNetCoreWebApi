@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Linq;
 
-namespace DotNetCoreWebApi.Infrastructure.JSONResponse
+namespace DotNetCoreWebApi.Infrastructure.Response
 {
     public class ApiError
     {

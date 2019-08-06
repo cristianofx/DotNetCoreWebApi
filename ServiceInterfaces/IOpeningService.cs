@@ -1,5 +1,5 @@
 ﻿using DotNetCoreWebApi.Data;
-using DotNetCoreWebApi.Infrastructure.JSONResponse;
+using DotNetCoreWebApi.Infrastructure.Response;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

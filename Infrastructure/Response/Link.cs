@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel;
 
-namespace DotNetCoreWebApi.Infrastructure.JSONResponse
+namespace DotNetCoreWebApi.Infrastructure.Response
 {
 
     public class Link

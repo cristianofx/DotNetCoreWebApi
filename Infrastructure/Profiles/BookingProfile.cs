@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DotNetCoreWebApi.Data;
-using DotNetCoreWebApi.Infrastructure.JSONResponse;
+using DotNetCoreWebApi.Infrastructure.Response;
 
 namespace DotNetCoreWebApi.Infrastructure.Profiles
 {

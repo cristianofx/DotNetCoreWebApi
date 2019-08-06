@@ -1,6 +1,6 @@
 ﻿using DotNetCoreWebApi.Data;
 
-namespace DotNetCoreWebApi.Infrastructure.JSONResponse
+namespace DotNetCoreWebApi.Infrastructure.Response
 {
     public class Collection<T> : Resource
     {

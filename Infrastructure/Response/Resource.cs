@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DotNetCoreWebApi.Infrastructure.JSONResponse
+namespace DotNetCoreWebApi.Infrastructure.Response
 {
 
     public abstract class Resource : Link
