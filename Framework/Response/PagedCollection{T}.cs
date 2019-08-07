@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 
-namespace DotNetCoreWebApi.Framework.Providers
+namespace DotNetCoreWebApi.Framework.Response
 {
     public class PagedCollection<T> : Collection<T>
     {

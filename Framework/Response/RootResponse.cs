@@ -1,4 +1,4 @@
-﻿namespace DotNetCoreWebApi.Framework.Providers
+﻿namespace DotNetCoreWebApi.Framework.Response
 {
     public class RootResponse : Resource
     {

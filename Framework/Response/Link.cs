@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel;
 
-namespace DotNetCoreWebApi.Framework.Providers
+namespace DotNetCoreWebApi.Framework.Response
 {
 
     public class Link

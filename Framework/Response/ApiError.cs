@@ -1,13 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Linq;
 
-namespace DotNetCoreWebApi.Framework.Providers
+namespace DotNetCoreWebApi.Framework.Response
 {
     public class ApiError
     {
         public ApiError()
         {
 
+        }
+
+        public ApiError(string message)
+        {
+            Message = message;
         }
 
         public ApiError(ModelStateDictionary modelState)

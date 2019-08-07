@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace DotNetCoreWebApi.Framework.Providers
+namespace DotNetCoreWebApi.Framework.Response
 {
     public class SortOptionsProcessor<T, TEntity>
     {

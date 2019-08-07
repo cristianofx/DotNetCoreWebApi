@@ -1,12 +1,12 @@
 ﻿using DotNetCoreWebApi.Framework.Attributes;
 using DotNetCoreWebApi.Framework.Helpers;
-using DotNetCoreWebApi.Framework.Providers;
+using DotNetCoreWebApi.Framework.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace DotNetCoreWebApi.Infrastructure.Providers
+namespace DotNetCoreWebApi.Infrastructure.Response
 {
     public class SearchOptionsProcessor<T, TEntity>
     {

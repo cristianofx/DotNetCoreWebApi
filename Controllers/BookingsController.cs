@@ -28,6 +28,17 @@ namespace DotNetCoreWebApi.Controllers
 
             return booking;
         }
+
+        // TODO: authorization
+        // DELETE /bookings/{bookingId}
+        [HttpDelete("{bookingId}", Name = nameof(DeleteBookingById))]
+        [ProducesResponseType(204)]
+        public async Task<ActionResult<Booking>> DeleteBookingById(Guid bookingId)
+        {
+            //TODO: authorize that the user is allowed to do this
+            await _bookingService.DeleteBookingAsync(bookingId);
+            return NoContent();
+        }
     }
 
 }

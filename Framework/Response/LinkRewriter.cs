@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace DotNetCoreWebApi.Framework.Providers
+namespace DotNetCoreWebApi.Framework.Response
 {
     public class LinkRewriter
     {

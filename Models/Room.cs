@@ -1,5 +1,5 @@
 ﻿using DotNetCoreWebApi.Framework.Attributes;
-using DotNetCoreWebApi.Framework.Providers;
+using DotNetCoreWebApi.Framework.Response;
 
 namespace DotNetCoreWebApi.Data
 {

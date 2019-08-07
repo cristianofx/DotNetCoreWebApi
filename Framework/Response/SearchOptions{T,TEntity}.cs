@@ -1,10 +1,10 @@
-﻿using DotNetCoreWebApi.Infrastructure.Providers;
+﻿using DotNetCoreWebApi.Infrastructure.Response;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace DotNetCoreWebApi.Framework.Providers
+namespace DotNetCoreWebApi.Framework.Response
 {
     public class SearchOptions<T, TEntity> : IValidatableObject
     {

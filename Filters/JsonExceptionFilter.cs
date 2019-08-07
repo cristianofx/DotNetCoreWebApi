@@ -1,4 +1,4 @@
-﻿using DotNetCoreWebApi.Framework.Providers;
+﻿using DotNetCoreWebApi.Framework.Response;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

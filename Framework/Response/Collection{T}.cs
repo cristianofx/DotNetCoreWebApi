@@ -1,6 +1,4 @@
-﻿using DotNetCoreWebApi.Data;
-
-namespace DotNetCoreWebApi.Framework.Providers
+﻿namespace DotNetCoreWebApi.Framework.Response
 {
     public class Collection<T> : Resource
     {
