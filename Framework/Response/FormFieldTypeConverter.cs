@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DotNetCoreWebApi.Infrastructure
+namespace DotNetCoreWebApi.Framework.Response
 {
     /// <summary>
     /// Converts some .NET types to ION Form Field types

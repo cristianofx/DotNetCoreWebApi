@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DotNetCoreWebApi.Data;
 using DotNetCoreWebApi.Framework.Response;
 using DotNetCoreWebApi.Models;
@@ -16,22 +17,29 @@ namespace DotNetCoreWebApi.Services
         private readonly ApiDbContext _context;
         private readonly IDateLogicService _dateLogicService;
         private readonly IMapper _mapper;
+        private readonly IConfigurationProvider _mappingConfiguration;
 
         public DefaultOpeningService(
             ApiDbContext context,
             IDateLogicService dateLogicService,
-            IMapper mapper)
+            IMapper mapper,
+            IConfigurationProvider mappingConfiguration
+            )
         {
             _context = context;
             _dateLogicService = dateLogicService;
             _mapper = mapper;
+            _mappingConfiguration = mappingConfiguration;
         }
 
-        public async Task<PagedResults<Opening>> GetOpeningsAsync(PagingOptions pagingOptions)
+        public async Task<PagedResults<Opening>> GetOpeningsAsync(
+            PagingOptions pagingOptions,
+            SortOptions<Opening, OpeningEntity> sortOptions,
+            SearchOptions<Opening, OpeningEntity> searchOptions)
         {
             var rooms = await _context.Rooms.ToArrayAsync();
 
-            var allOpenings = new List<Opening>();
+            var allOpenings = new List<OpeningEntity>();
 
             foreach (var room in rooms)
             {
@@ -55,20 +63,27 @@ namespace DotNetCoreWebApi.Services
                         Rate = room.Rate,
                         StartAt = slot.StartAt,
                         EndAt = slot.EndAt
-                    })
-                    .Select(model => _mapper.Map<Opening>(model));
+                    });
 
                 allOpenings.AddRange(openings);
             }
 
-            var pagedOpenings = allOpenings.Skip(pagingOptions.Offset.Value)
-                                           .Take(pagingOptions.Limit.Value);
+            var pseudoQuery = allOpenings.AsQueryable();
+            pseudoQuery = searchOptions.Apply(pseudoQuery);
+            pseudoQuery = sortOptions.Apply(pseudoQuery);
 
+            var size = pseudoQuery.Count();
+
+            var items = pseudoQuery
+                .Skip(pagingOptions.Offset.Value)
+                .Take(pagingOptions.Limit.Value)
+                .ProjectTo<Opening>(_mappingConfiguration)
+                .ToArray();
 
             return new PagedResults<Opening>
             {
-                Items = pagedOpenings,
-                TotalSize = allOpenings.Count
+                Items = items,
+                TotalSize = size
             };
         }
 

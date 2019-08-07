@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace DotNetCoreWebApi.Profiles
+namespace DotNetCoreWebApi.MappingProfiles
 {
     public class MappingProfile : Profile
     {

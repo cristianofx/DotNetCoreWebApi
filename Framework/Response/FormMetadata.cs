@@ -1,6 +1,5 @@
 ﻿using DotNetCoreWebApi.Extensions;
 using DotNetCoreWebApi.Framework.Attributes;
-using DotNetCoreWebApi.Framework.Response;
 using DotNetCoreWebApi.Models;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace DotNetCoreWebApi.Infrastructure
+namespace DotNetCoreWebApi.Framework.Response
 {
     public static class FormMetadata
     {

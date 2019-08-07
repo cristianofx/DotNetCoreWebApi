@@ -1,6 +1,5 @@
 ﻿using DotNetCoreWebApi.Data;
 using DotNetCoreWebApi.Framework.Response;
-using DotNetCoreWebApi.Infrastructure;
 using DotNetCoreWebApi.Models;
 using DotNetCoreWebApi.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -76,18 +75,33 @@ namespace DotNetCoreWebApi.Controllers
 
         // GET /rooms/openings
         [HttpGet("openings", Name = nameof(GetAllRoomOpenings))]
+        [ProducesResponseType(400)]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings([FromQuery] PagingOptions pagingOptions = null)
+        [ResponseCache(Duration = 30, VaryByQueryKeys = new[] { "offset", "limit", "orderBy", "search"})]
+        public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings(
+            [FromQuery] PagingOptions pagingOptions,
+            [FromQuery] SortOptions<Opening, OpeningEntity> sortOptions,
+            [FromQuery] SearchOptions<Opening, OpeningEntity> searchOptions)
         {
             pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
             pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
-            var openings = await _openingService.GetOpeningsAsync(pagingOptions);
+            var openings = await _openingService.GetOpeningsAsync(
+                pagingOptions, sortOptions, searchOptions);
 
-            var collection = PagedCollection<Opening>.Create(Link.ToCollection(nameof(GetAllRoomOpenings)),
-                                                             openings.Items.ToArray(),
-                                                             openings.TotalSize,
-                                                             pagingOptions);
+            var collection = PagedCollection<Opening>.Create<OpeningsResponse>(
+                Link.ToCollection(nameof(GetAllRoomOpenings)),
+                openings.Items.ToArray(),
+                openings.TotalSize,
+                pagingOptions);
+
+            collection.OpeningsQuery = FormMetadata.FromResource<Opening>(
+                Link.ToForm(
+                    nameof(GetAllRoomOpenings),
+                    null,
+                    Link.GetMethod,
+                    Form.QueryRelation));
+
 
             return collection;
         }

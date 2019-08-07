@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using DotNetCoreWebApi.Data;
 using DotNetCoreWebApi.Framework.Response;
-using DotNetCoreWebApi.Infrastructure;
 using DotNetCoreWebApi.Models;
 
-namespace DotNetCoreWebApi.Profiles
+namespace DotNetCoreWebApi.MappingProfiles
 {
     public class RoomProfile : Profile
     {

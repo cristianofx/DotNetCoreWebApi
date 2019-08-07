@@ -3,7 +3,7 @@ using DotNetCoreWebApi.Data;
 using DotNetCoreWebApi.Framework.Response;
 using DotNetCoreWebApi.Models;
 
-namespace DotNetCoreWebApi.Profiles
+namespace DotNetCoreWebApi.MappingProfiles
 {
     public class BookingProfile : Profile
     {

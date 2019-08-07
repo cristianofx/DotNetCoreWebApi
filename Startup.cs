@@ -48,6 +48,11 @@ namespace DotNetCoreWebApi
 
             services.AddMvc(options =>
             {
+                options.CacheProfiles.Add("Static", new CacheProfile
+                {
+                    Duration = 86400
+                });
+
                 options.Filters.Add<JsonExceptionFilter>();
                 options.Filters.Add<RequireHttpsOrCloseAttribute>();
                 options.Filters.Add<LinkRewritingFilter>();
@@ -87,6 +92,9 @@ namespace DotNetCoreWebApi
                                                         };
                                                     });
 
+
+            services.AddResponseCaching();
+
             // If CORS is needed, use options bellow
             //services.AddCors(options =>
             //{
@@ -118,6 +126,8 @@ namespace DotNetCoreWebApi
 
             // Disabled redirection since we added RequireHttpsOrCloseAttribute filter to reject any HTTP request
             //app.UseHttpsRedirection();
+
+            app.UseResponseCaching();
 
             app.UseMvc();
         }
