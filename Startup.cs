@@ -17,6 +17,8 @@ using System;
 using Microsoft.AspNetCore.Identity;
 using AspNet.Security.OpenIdConnect.Primitives;
 using OpenIddict.Validation;
+using DotNetCoreWebApi.Framework.ServiceInterfaces;
+using DotNetCoreWebApi.Framework.Services;
 
 namespace DotNetCoreWebApi
 {
@@ -43,7 +45,7 @@ namespace DotNetCoreWebApi
             services.AddScoped<IDateLogicService, DefaultDateLogicService>();
             services.AddScoped<IOpeningService, DefaultOpeningService>();
             services.AddScoped<IUserService, DefaultUserService>();
-
+            services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>));
             //using in-memory database for dev and testing
             //TODO: Swapp to a real database
             services.AddDbContext<ApiDbContext>(options =>

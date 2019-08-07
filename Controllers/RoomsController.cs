@@ -1,5 +1,7 @@
 ﻿using DotNetCoreWebApi.Data;
 using DotNetCoreWebApi.Framework.Response;
+using DotNetCoreWebApi.Framework.ServiceInterfaces;
+using DotNetCoreWebApi.MappingProfiles;
 using DotNetCoreWebApi.Models;
 using DotNetCoreWebApi.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +14,7 @@ namespace DotNetCoreWebApi.Controllers
 {
     [Route("/[controller]")]
     [ApiController]
-    public class RoomsController : ControllerBase
+    public class RoomsController : ReadOnlyController<Room, RoomEntity, RoomProfile, RoomsResponse> //ControllerBase
     {
         private readonly IRoomService _roomService;
         private readonly IOpeningService _openingService;
@@ -20,8 +22,8 @@ namespace DotNetCoreWebApi.Controllers
         private readonly IDateLogicService _dateLogicService;
         private readonly IBookingService _bookingService;
 
-        public RoomsController(IRoomService roomService, IOpeningService openingService, IOptions<PagingOptions> defaultPagingOptionsWrapper,
-            IDateLogicService dateLogicService, IBookingService bookingService)
+        public RoomsController(IBaseService<Room, RoomEntity> baseService, IRoomService roomService, IOpeningService openingService, IOptions<PagingOptions> defaultPagingOptionsWrapper,
+            IDateLogicService dateLogicService, IBookingService bookingService) : base(defaultPagingOptionsWrapper, baseService)
         {
             _roomService = roomService;
             _openingService = openingService;
@@ -30,32 +32,32 @@ namespace DotNetCoreWebApi.Controllers
             _bookingService = bookingService;
         }
 
-        // GET /rooms
-        [HttpGet(Name = nameof(GetAllRooms))]
-        [ProducesResponseType(200)]
-        public async Task<ActionResult<Collection<Room>>> GetAllRooms(
-            [FromQuery] PagingOptions pagingOptions,
-            [FromQuery] SortOptions<Room, RoomEntity> sortOptions,
-            [FromQuery] SearchOptions<Room, RoomEntity> searchOptions)
-        {
-            pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
-            pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+        //// GET /rooms
+        //[HttpGet(Name = nameof(GetAllRooms))]
+        //[ProducesResponseType(200)]
+        //public async Task<ActionResult<Collection<Room>>> GetAllRooms(
+        //    [FromQuery] PagingOptions pagingOptions,
+        //    [FromQuery] SortOptions<Room, RoomEntity> sortOptions,
+        //    [FromQuery] SearchOptions<Room, RoomEntity> searchOptions)
+        //{
+        //    pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
+        //    pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
-            var rooms = await _roomService.GetRoomsAsync(pagingOptions, sortOptions, searchOptions);
+        //    var rooms = await _roomService.GetRoomsAsync(pagingOptions, sortOptions, searchOptions);
 
-            var collection = PagedCollection<Room>.Create<RoomsResponse>(
-                Link.ToCollection(nameof(GetAllRooms)),
-                rooms.Items.ToArray(),
-                rooms.TotalSize,
-                pagingOptions);
-            collection.Openings = Link.ToCollection(nameof(GetAllRoomOpenings));
-            collection.RoomsQuery = FormMetadata.FromResource<Room>(Link.ToForm(nameof(GetAllRooms),
-                                                                    null,
-                                                                    Link.GetMethod,
-                                                                    Form.QueryRelation));
+        //    var collection = PagedCollection<Room>.Create<RoomsResponse>(
+        //        Link.ToCollection(nameof(GetAllRooms)),
+        //        rooms.Items.ToArray(),
+        //        rooms.TotalSize,
+        //        pagingOptions);
+        //    collection.Openings = Link.ToCollection(nameof(GetAllRoomOpenings));
+        //    collection.RoomsQuery = FormMetadata.FromResource<Room>(Link.ToForm(nameof(GetAllRooms),
+        //                                                            null,
+        //                                                            Link.GetMethod,
+        //                                                            Form.QueryRelation));
 
-            return collection;
-        }
+        //    return collection;
+        //}
 
         //GET /rooms/{roomId}
         [HttpGet("{roomId}", Name = nameof(GetRoomById))]
