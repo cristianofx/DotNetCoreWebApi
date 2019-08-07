@@ -1,7 +1,7 @@
 ﻿using DotNetCoreWebApi.Framework.Attributes;
 using DotNetCoreWebApi.Framework.Response;
 
-namespace DotNetCoreWebApi.Data
+namespace DotNetCoreWebApi.Models
 {
     public class Room : Resource
     {
@@ -12,5 +12,7 @@ namespace DotNetCoreWebApi.Data
         [Sortable(Default = true)]
         [SearchableDecimal]
         public decimal Rate { get; set; }
+
+        public Form Book { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using DotNetCoreWebApi.Data;
+﻿using DotNetCoreWebApi.Models;
 using System;
 
 namespace DotNetCoreWebApi.Data

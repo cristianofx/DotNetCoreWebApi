@@ -1,7 +1,7 @@
 ﻿using DotNetCoreWebApi.Framework.Response;
 using System;
 
-namespace DotNetCoreWebApi.Data
+namespace DotNetCoreWebApi.Models
 {
     public class Opening
     {

@@ -1,6 +1,6 @@
 ﻿using DotNetCoreWebApi.Framework.Response;
 
-namespace DotNetCoreWebApi.Data
+namespace DotNetCoreWebApi.Models
 {
     public class HotelInfo : Resource
     {

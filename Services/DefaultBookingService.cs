@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DotNetCoreWebApi.Data;
+using DotNetCoreWebApi.Models;
 using DotNetCoreWebApi.ServiceInterfaces;
 using Microsoft.EntityFrameworkCore;
 using System;

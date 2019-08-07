@@ -1,4 +1,4 @@
-﻿using DotNetCoreWebApi.Data;
+﻿using DotNetCoreWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 

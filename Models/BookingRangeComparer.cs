@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace DotNetCoreWebApi.Data
+namespace DotNetCoreWebApi.Models
 {
     public class BookingRangeComparer : IEqualityComparer<BookingRange>
     {

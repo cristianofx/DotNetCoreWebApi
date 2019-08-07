@@ -1,5 +1,5 @@
-﻿using DotNetCoreWebApi.Data;
-using DotNetCoreWebApi.Framework.Response;
+﻿using DotNetCoreWebApi.Framework.Response;
+using DotNetCoreWebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,4 +1,4 @@
-﻿using DotNetCoreWebApi.Data;
+﻿using DotNetCoreWebApi.Models;
 using DotNetCoreWebApi.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;

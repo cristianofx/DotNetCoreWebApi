@@ -1,4 +1,4 @@
-﻿using DotNetCoreWebApi.Data;
+﻿using DotNetCoreWebApi.Models;
 using System;
 using System.Threading.Tasks;
 

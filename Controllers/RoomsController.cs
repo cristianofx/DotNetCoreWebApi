@@ -1,5 +1,6 @@
 ﻿using DotNetCoreWebApi.Data;
 using DotNetCoreWebApi.Framework.Response;
+using DotNetCoreWebApi.Infrastructure;
 using DotNetCoreWebApi.Models;
 using DotNetCoreWebApi.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,10 @@ namespace DotNetCoreWebApi.Controllers
                 rooms.TotalSize,
                 pagingOptions);
             collection.Openings = Link.ToCollection(nameof(GetAllRoomOpenings));
+            collection.RoomsQuery = FormMetadata.FromResource<Room>(Link.ToForm(nameof(GetAllRooms),
+                                                                    null,
+                                                                    Link.GetMethod,
+                                                                    Form.QueryRelation));
 
             return collection;
         }
@@ -89,11 +94,11 @@ namespace DotNetCoreWebApi.Controllers
 
         // POST /rooms/{roomId}/bookings
         //TODO: authentication
-        [HttpPost ("{roomId}/bookings", Name = nameof(CreateBookingForRoom))]
+        [HttpPost ("{roomId}/bookings", Name = nameof(CreateBookingForRoomAsync))]
         [ProducesResponseType(404)]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> CreateBookingForRoom(Guid roomId, [FromBody] BookingForm bookingForm)
+        public async Task<ActionResult> CreateBookingForRoomAsync(Guid roomId, [FromBody] BookingForm bookingForm)
         {
             var room = await _roomService.GetRoomAsync(roomId);
             if (room == null) return NotFound();

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DotNetCoreWebApi.Data;
 using DotNetCoreWebApi.Framework.Response;
+using DotNetCoreWebApi.Models;
 
 namespace DotNetCoreWebApi.Profiles
 {
