@@ -13,6 +13,10 @@ using AutoMapper;
 using DotNetCoreWebApi.Models;
 using Newtonsoft.Json;
 using DotNetCoreWebApi.Framework.Response;
+using System;
+using Microsoft.AspNetCore.Identity;
+using AspNet.Security.OpenIdConnect.Primitives;
+using OpenIddict.Validation;
 
 namespace DotNetCoreWebApi
 {
@@ -38,13 +42,51 @@ namespace DotNetCoreWebApi
             services.AddScoped<IBookingService, DefaultBookingService>();
             services.AddScoped<IDateLogicService, DefaultDateLogicService>();
             services.AddScoped<IOpeningService, DefaultOpeningService>();
+            services.AddScoped<IUserService, DefaultUserService>();
 
             //using in-memory database for dev and testing
             //TODO: Swapp to a real database
             services.AddDbContext<ApiDbContext>(options =>
             {
                 options.UseInMemoryDatabase("apidb");
+                options.UseOpenIddict<Guid>();
             });
+
+            //AddOpenIddict services
+            services.AddOpenIddict()
+                .AddCore(options =>
+                {
+                    options.UseEntityFrameworkCore()
+                    .UseDbContext<ApiDbContext>()
+                    .ReplaceDefaultEntities<Guid>();
+                })
+                .AddServer(options =>
+                {
+                    options.UseMvc();
+
+                    options.EnableTokenEndpoint("/token");
+
+                    options.AllowPasswordFlow();
+                    options.AcceptAnonymousClients();
+                })
+                .AddValidation();
+
+            // ASP.NET Core Identity should use the same claim names as OpenIddict
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
+                options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
+                options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
+            });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = OpenIddictValidationDefaults.AuthenticationScheme;
+            });
+
+            // Add ASP.NET Core Identity
+            //services.AddIdentity();
+            AddIdentityCoreServices(services);
 
             services.AddMvc(options =>
             {
@@ -95,12 +137,28 @@ namespace DotNetCoreWebApi
 
             services.AddResponseCaching();
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ViewAllUsersPolicy",
+                p => p.RequireAuthenticatedUser().RequireRole("Admin"));
+            });
+
             // If CORS is needed, use options bellow
             //services.AddCors(options =>
             //{
             //    options.AddPolicy("AllowApp",
             //        policy => policy.AllowAnyOrigin());//policy.WithOrigins("https://example.com"));
             //});
+        }
+
+        private void AddIdentityCoreServices(IServiceCollection services)
+        {
+            var builder = services.AddIdentityCore<UserEntity>();
+            builder = new IdentityBuilder(builder.UserType, typeof(UserRoleEntity), builder.Services);
+            builder.AddRoles<UserRoleEntity>()
+                .AddEntityFrameworkStores<ApiDbContext>()
+                .AddDefaultTokenProviders()
+                .AddSignInManager<SignInManager<UserEntity>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -126,6 +184,8 @@ namespace DotNetCoreWebApi
 
             // Disabled redirection since we added RequireHttpsOrCloseAttribute filter to reject any HTTP request
             //app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseResponseCaching();
 

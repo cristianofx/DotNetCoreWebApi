@@ -1,9 +1,10 @@
-﻿using DotNetCoreWebApi.Data;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace DotNetCoreWebApi.Data
 {
-    public class ApiDbContext : DbContext
+    public class ApiDbContext : IdentityDbContext<UserEntity, UserRoleEntity, Guid>
     {
         public ApiDbContext(DbContextOptions options)
             : base(options) { }
