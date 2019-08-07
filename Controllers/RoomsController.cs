@@ -1,5 +1,5 @@
 ﻿using DotNetCoreWebApi.Data;
-using DotNetCoreWebApi.Infrastructure.Response;
+using DotNetCoreWebApi.Framework.Providers;
 using DotNetCoreWebApi.Models;
 using DotNetCoreWebApi.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;

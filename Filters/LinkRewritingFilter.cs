@@ -1,7 +1,7 @@
 ﻿using DotNetCoreWebApi.Data;
 using DotNetCoreWebApi.Extensions;
-using DotNetCoreWebApi.Infrastructure;
-using DotNetCoreWebApi.Infrastructure.Response;
+using DotNetCoreWebApi.Framework;
+using DotNetCoreWebApi.Framework.Providers;
 using DotNetCoreWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

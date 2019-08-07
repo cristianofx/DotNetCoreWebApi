@@ -12,7 +12,7 @@ using DotNetCoreWebApi.Services;
 using AutoMapper;
 using DotNetCoreWebApi.Models;
 using Newtonsoft.Json;
-using DotNetCoreWebApi.Infrastructure.Response;
+using DotNetCoreWebApi.Framework.Providers;
 
 namespace DotNetCoreWebApi
 {

@@ -1,4 +1,4 @@
-﻿using DotNetCoreWebApi.Infrastructure.Response;
+﻿using DotNetCoreWebApi.Framework.Providers;
 
 namespace DotNetCoreWebApi.Data
 {
