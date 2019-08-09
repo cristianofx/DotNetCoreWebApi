@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace DotNetCoreWebApi.Controllers
@@ -48,6 +49,24 @@ namespace DotNetCoreWebApi.Controllers
                 response.Items.ToArray(),
                 response.TotalSize,
                 pagingOptions);
+
+            var props = typeof(TResponseModel).GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
+                                              .Where(X => X.PropertyType == typeof(Form));
+
+            foreach(var prop in props)
+            {
+                PropertyInfo propertyInfo = collection.GetType().GetProperty(prop.Name);
+                propertyInfo.SetValue(collection, 
+                                      Convert.ChangeType(FormMetadata.FromResource<T>(Link.ToForm(nameof(GetAll),
+                                            null,
+                                            Link.GetMethod,
+                                            Form.QueryRelation))
+                                     , prop.PropertyType)
+                                     , null);
+            }
+
+
+
             //collection.Openings = Link.ToCollection(nameof(GetAllRoomOpenings));
             //collection.RoomsQuery = FormMetadata.FromResource<Room>(Link.ToForm(nameof(GetAllRooms),
             //                                                        null,
