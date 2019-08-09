@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Framework\Response\FormMetadata.cs" />
+    <Compile Remove="Models\Form.cs" />
+    <Compile Remove="Models\FormField.cs" />
+    <Compile Remove="Models\FormFieldOption.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
