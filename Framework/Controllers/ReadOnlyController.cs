@@ -1,12 +1,10 @@
-﻿using DotNetCoreWebApi.Data;
-using DotNetCoreWebApi.Framework.Forms;
+﻿using DotNetCoreWebApi.Framework.Forms;
 using DotNetCoreWebApi.Framework.Response;
 using DotNetCoreWebApi.Framework.ServiceInterfaces;
-using DotNetCoreWebApi.Models;
-using DotNetCoreWebApi.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -18,18 +16,14 @@ namespace DotNetCoreWebApi.Controllers
     public abstract class ReadOnlyController<T, TEntity, TMapping, TResponseModel> : ControllerBase where TResponseModel : PagedCollection<T>, new()
     {
         private readonly IBaseService<T, TEntity> _baseService;
-        //private readonly IOpeningService _openingService;
         private readonly PagingOptions _defaultPagingOptions;
-        //private readonly IDateLogicService _dateLogicService;
-        //private readonly IBookingService _bookingService;
 
-        public ReadOnlyController(IOptions<PagingOptions> defaultPagingOptionsWrapper, IBaseService<T, TEntity> baseService)
+        abstract protected Dictionary<string, Link> relations { get; }
+
+        protected ReadOnlyController(IOptions<PagingOptions> defaultPagingOptionsWrapper, IBaseService<T, TEntity> baseService)
         {
             _baseService = baseService;
-            //_openingService = openingService;
             _defaultPagingOptions = defaultPagingOptionsWrapper.Value;
-            //_dateLogicService = dateLogicService;
-            //_bookingService = bookingService;
         }
 
         // GET /rooms
@@ -51,6 +45,20 @@ namespace DotNetCoreWebApi.Controllers
                 response.TotalSize,
                 pagingOptions);
 
+            if(relations != null && relations.Any())
+            {
+                var linkProps = typeof(TResponseModel).GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
+                                              .Where(x => x.PropertyType == typeof(Link) && relations.ContainsKey(x.Name));
+
+                foreach (var prop in linkProps)
+                {
+                    PropertyInfo propertyInfo = collection.GetType().GetProperty(prop.Name);
+                    propertyInfo.SetValue(collection,
+                                          relations[prop.Name]// Link.ToForm(nameof(GetAll),
+                                         , null);
+                }
+            }
+
             var props = typeof(TResponseModel).GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
                                               .Where(X => X.PropertyType == typeof(Form));
 
@@ -66,89 +74,23 @@ namespace DotNetCoreWebApi.Controllers
                                      , null);
             }
 
-
-
-            //collection.Openings = Link.ToCollection(nameof(GetAllRoomOpenings));
-            //collection.RoomsQuery = FormMetadata.FromResource<Room>(Link.ToForm(nameof(GetAllRooms),
-            //                                                        null,
-            //                                                        Link.GetMethod,
-            //                                                        Form.QueryRelation));
-
             return collection;
         }
 
-        ////GET /rooms/{roomId}
-        //[HttpGet("{roomId}", Name = nameof(GetRoomById))]
-        //[ProducesResponseType(404)]
-        //[ProducesResponseType(200)]
-        //public async Task<ActionResult<Room>> GetRoomById(Guid roomId)
-        //{
-        //    var room = await _roomService.GetRoomAsync(roomId);
+        //GET /rooms/{roomId}
+        [HttpGet("{id}", Name = nameof(GetById))]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(200)]
+        public async Task<ActionResult<T>> GetById(Guid id)
+        {
+            var t = await _baseService.GetByIdAsync(id);
 
-        //    if (room == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (t == null)
+            {
+                return NotFound();
+            }
 
-        //    return room;
-        //}
-
-        //// GET /rooms/openings
-        //[HttpGet("openings", Name = nameof(GetAllRoomOpenings))]
-        //[ProducesResponseType(400)]
-        //[ProducesResponseType(200)]
-        //[ResponseCache(Duration = 30, VaryByQueryKeys = new[] { "offset", "limit", "orderBy", "search" })]
-        //public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings(
-        //    [FromQuery] PagingOptions pagingOptions,
-        //    [FromQuery] SortOptions<Opening, OpeningEntity> sortOptions,
-        //    [FromQuery] SearchOptions<Opening, OpeningEntity> searchOptions)
-        //{
-        //    pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
-        //    pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
-
-        //    var openings = await _openingService.GetOpeningsAsync(
-        //        pagingOptions, sortOptions, searchOptions);
-
-        //    var collection = PagedCollection<Opening>.Create<OpeningsResponse>(
-        //        Link.ToCollection(nameof(GetAllRoomOpenings)),
-        //        openings.Items.ToArray(),
-        //        openings.TotalSize,
-        //        pagingOptions);
-
-        //    collection.OpeningsQuery = FormMetadata.FromResource<Opening>(
-        //        Link.ToForm(
-        //            nameof(GetAllRoomOpenings),
-        //            null,
-        //            Link.GetMethod,
-        //            Form.QueryRelation));
-
-
-        //    return collection;
-        //}
-
-        //// POST /rooms/{roomId}/bookings
-        ////TODO: authentication
-        //[HttpPost("{roomId}/bookings", Name = nameof(CreateBookingForRoomAsync))]
-        //[ProducesResponseType(404)]
-        //[ProducesResponseType(201)]
-        //[ProducesResponseType(400)]
-        //public async Task<ActionResult> CreateBookingForRoomAsync(Guid roomId, [FromBody] BookingForm bookingForm)
-        //{
-        //    var room = await _roomService.GetRoomAsync(roomId);
-        //    if (room == null) return NotFound();
-
-        //    var minimumStay = _dateLogicService.GetMinimumStay();
-        //    bool tooShort = (bookingForm.EndAt.Value - bookingForm.StartAt.Value) < minimumStay;
-        //    if (tooShort) return BadRequest(new ApiError($"The minimum booking duration is {minimumStay.TotalHours} hours"));
-
-        //    var conflictedSlots = await _openingService.GetConflictingSlots(roomId, bookingForm.StartAt.Value, bookingForm.EndAt.Value);
-        //    if (conflictedSlots.Any()) return BadRequest(new ApiError($"This time conflict with an existing booking."));
-
-        //    var userId = Guid.NewGuid();
-
-        //    var bookingId = await _bookingService.CreateBookingAsync(userId, roomId, bookingForm.StartAt.Value, bookingForm.EndAt.Value);
-
-        //    return Created(Url.Link(nameof(BookingsController.GetBookingById), new { bookingId }), null);
-        //}
+            return t;
+        }
     }
 }

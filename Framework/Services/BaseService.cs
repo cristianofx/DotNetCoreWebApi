@@ -11,28 +11,17 @@ using System.Threading.Tasks;
 
 namespace DotNetCoreWebApi.Framework.Services
 {
-    public class BaseService<T, TEntity> : IBaseService<T, TEntity>
+    public class BaseService<T, TEntity> : IBaseService<T, TEntity> where TEntity : class
     {
         private readonly ApiDbContext _context;
         private readonly IConfigurationProvider _mappingConfiguration;
+        protected string[] idFields => new string[] { "Id" };
 
         public BaseService(ApiDbContext context, IConfigurationProvider mappingConfiguration)
         {
             _context = context;
             _mappingConfiguration = mappingConfiguration;
         }
-
-        //public async Task<Room> GetRoomAsync(Guid id)
-        //{
-        //    var entity = await _context.Rooms.FirstOrDefaultAsync(x => x.Id == id);
-
-        //    if (entity == null)
-        //    {
-        //        return null;
-        //    }
-        //    var mapper = _mappingConfiguration.CreateMapper();
-        //    return mapper.Map<Room>(entity);
-        //}
 
         public async Task<PagedResults<T>> GetAllAsync(PagingOptions pagingOptions, SortOptions<T, TEntity> sortOptions, SearchOptions<T, TEntity> searchOptions)
         {
@@ -55,17 +44,19 @@ namespace DotNetCoreWebApi.Framework.Services
             };
         }
 
-        //public Task<T> GetRoomAsync(Guid id)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public async Task<T> GetByIdAsync(Guid id)
+        {
+            var entity = await _context.Set<TEntity>().FindAsync(id);
 
-        //public Task<PagedResults<T>> GetRoomsAsync(PagingOptions pagingOptions, SortOptions<T, TEntity> sortOptions, SearchOptions<T, TEntity> searchOptions)
-        //{
-        //    throw new NotImplementedException();
-        //}
+            if (entity == null)
+            {
+                return default(T);
+            }
+            var mapper = _mappingConfiguration.CreateMapper();
+            return mapper.Map<T>(entity);
+        }
 
-        private Room NotFound()
+        private T NotFound()
         {
             throw new NotImplementedException();
         }

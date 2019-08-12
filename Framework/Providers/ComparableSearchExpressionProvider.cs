@@ -1,9 +1,8 @@
-﻿using DotNetCoreWebApi.Framework.Providers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace LandonApi.Infrastructure.Providers
+namespace DotNetCoreWebApi.Framework.Providers
 {
     public abstract class ComparableSearchExpressionProvider : DefaultSearchExpressionProvider
     {
@@ -11,6 +10,7 @@ namespace LandonApi.Infrastructure.Providers
         private const string GreaterThanEqualToOperator = "gte";
         private const string LessThanOperator = "lt";
         private const string LessThanEqualToOperator = "lte";
+        private const string EqualToOperator = "eq";
 
         public override IEnumerable<string> GetOperators()
             => base.GetOperators()
@@ -19,7 +19,8 @@ namespace LandonApi.Infrastructure.Providers
                 GreaterThanOperator,
                 GreaterThanEqualToOperator,
                 LessThanOperator,
-                LessThanEqualToOperator
+                LessThanEqualToOperator,
+                EqualToOperator
             });
 
         public override Expression GetComparison(
@@ -33,6 +34,7 @@ namespace LandonApi.Infrastructure.Providers
                 case GreaterThanEqualToOperator: return Expression.GreaterThanOrEqual(left, right);
                 case LessThanOperator: return Expression.LessThan(left, right);
                 case LessThanEqualToOperator: return Expression.LessThanOrEqual(left, right);
+                case EqualToOperator: return Expression.Equal(left, right);
                 default: return base.GetComparison(left, op, right);
             }
         }

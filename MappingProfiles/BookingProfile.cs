@@ -17,7 +17,7 @@ namespace DotNetCoreWebApi.MappingProfiles
                         new { bookingId = src.Id })))
                 .ForMember(dest => dest.Room, opt => opt.MapFrom(src =>
                     Link.To(
-                        nameof(Controllers.RoomsController.GetRoomById),
+                        nameof(Controllers.RoomsController.GetById),
                         new { roomId = src.Id })));
         }
     }

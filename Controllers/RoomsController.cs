@@ -8,6 +8,7 @@ using DotNetCoreWebApi.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,6 +24,8 @@ namespace DotNetCoreWebApi.Controllers
         private readonly IDateLogicService _dateLogicService;
         private readonly IBookingService _bookingService;
 
+        protected override Dictionary<string, Link> relations => new Dictionary<string, Link>() { ["Openings"] = Link.ToCollection(nameof(GetAllRoomOpenings)) };
+
         public RoomsController(IBaseService<Room, RoomEntity> baseService, IRoomService roomService, IOpeningService openingService, IOptions<PagingOptions> defaultPagingOptionsWrapper,
             IDateLogicService dateLogicService, IBookingService bookingService) : base(defaultPagingOptionsWrapper, baseService)
         {
@@ -31,49 +34,6 @@ namespace DotNetCoreWebApi.Controllers
             _defaultPagingOptions = defaultPagingOptionsWrapper.Value;
             _dateLogicService = dateLogicService;
             _bookingService = bookingService;
-        }
-
-        //// GET /rooms
-        //[HttpGet(Name = nameof(GetAllRooms))]
-        //[ProducesResponseType(200)]
-        //public async Task<ActionResult<Collection<Room>>> GetAllRooms(
-        //    [FromQuery] PagingOptions pagingOptions,
-        //    [FromQuery] SortOptions<Room, RoomEntity> sortOptions,
-        //    [FromQuery] SearchOptions<Room, RoomEntity> searchOptions)
-        //{
-        //    pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
-        //    pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
-
-        //    var rooms = await _roomService.GetRoomsAsync(pagingOptions, sortOptions, searchOptions);
-
-        //    var collection = PagedCollection<Room>.Create<RoomsResponse>(
-        //        Link.ToCollection(nameof(GetAllRooms)),
-        //        rooms.Items.ToArray(),
-        //        rooms.TotalSize,
-        //        pagingOptions);
-        //    collection.Openings = Link.ToCollection(nameof(GetAllRoomOpenings));
-        //    collection.RoomsQuery = FormMetadata.FromResource<Room>(Link.ToForm(nameof(GetAllRooms),
-        //                                                            null,
-        //                                                            Link.GetMethod,
-        //                                                            Form.QueryRelation));
-
-        //    return collection;
-        //}
-
-        //GET /rooms/{roomId}
-        [HttpGet("{roomId}", Name = nameof(GetRoomById))]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(200)]
-        public async Task<ActionResult<Room>> GetRoomById(Guid roomId)
-        {
-            var room = await _roomService.GetRoomAsync(roomId);
-
-            if (room == null)
-            {
-                return NotFound();
-            }
-
-            return room;
         }
 
         // GET /rooms/openings
